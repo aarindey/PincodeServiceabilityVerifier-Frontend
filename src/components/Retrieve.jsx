@@ -1,49 +1,112 @@
-// eslint-disable-next-line no-unused-vars
-import React, { useState } from "react";
+/* eslint-disable react/prop-types */
+import { useState } from "react";
 import axios from "axios";
-import Button from "./Button";
+import SubHeading from "./SubHeading";
+import Heading from "./Heading";
 
 // Retrieve component
-// eslint-disable-next-line react/prop-types
-export default function Retrieve({ inputs }) {
-  const [inorderTraversal, setInorderTraversal] = useState([]);
+export default function Retrieve({ inputs, inputType }) {
+  const [queryResponse, setQueryResponse] = useState({});
+  const [isQuerySent, setIsQuerySent] = useState(false);
 
-  // Function to handle the "Retrieve" button click
-  const handleRetrieveClick = async () => {
+  const handleSendQuery = async () => {
     try {
-      // Make the API call
-      const response = await axios.get(
-        `https://asia-south2-local-cogency-413608.cloudfunctions.net/search_matrix?${inputs}`
-      );
+      let endpoint =
+        "https://asia-south2-local-cogency-413608.cloudfunctions.net/QuerySparseMatrix";
 
-      // Extract the array from the response data
-      const { inorder_traversal } = response.data;
+      // Adjust parameters based on inputType
+      let params = {};
+      if (inputType === 0) {
+        params["pincodeList"] = inputs.join(",").replace(/,+$/, "");
+      } else if (inputType === 1) {
+        params["company"] = inputs[0];
+      } else if (inputType === 2) {
+        params["company"] = inputs[1];
+        params["pincode"] = inputs[0];
+      }
 
-      // Update the state variable with the obtained array
-      setInorderTraversal(inorder_traversal);
+      const response = await axios.get(endpoint, { params });
+
+      const { data } = response;
+
+      setQueryResponse(data);
+      setIsQuerySent(true);
     } catch (error) {
-      console.error("Error retrieving data:", error);
+      console.error("Error sending query:", error);
     }
+  };
+
+  // Function to render the content based on the response data
+  const renderContent = () => {
+    if (inputType === 0) {
+      // For Type 0 query
+      if (queryResponse.companies) {
+        return (
+          <div>
+            <SubHeading
+              label={
+                "The companies corresponding to the following pincodes are:"
+              }
+            />
+            <ul className="text-slate-500 list-disc pl-10 -mt-2">
+              {Object.entries(queryResponse.companies).map(
+                ([pincode, companies]) => (
+                  <li key={pincode}>
+                    <span className="text-slate-500">{pincode}:</span>{" "}
+                    {companies.join(", ")}
+                  </li>
+                )
+              )}
+            </ul>
+          </div>
+        );
+      }
+    } else if (inputType === 1) {
+      // For Type 1 query
+      if (queryResponse.pincodes) {
+        return (
+          <div>
+            <SubHeading
+              label={`The pincodes corresponding to the company ${inputs[0]} are:`}
+            />
+            <ul className="text-slate-500 text-md px-4 pb-4 list-disc pl-10 -mt-2">
+              {queryResponse.pincodes.map((pincode, index) => (
+                <li key={index}>{pincode}</li>
+              ))}
+            </ul>
+          </div>
+        );
+      }
+    } else if (inputType === 2) {
+      // For Type 2 query
+      if (queryResponse.exists !== undefined) {
+        return (
+          <p className="text-slate-500 text-md px-4 pb-4">
+            The Tuple ({inputs[1]}, {inputs[0]}) is{" "}
+            {queryResponse.exists ? "present" : "absent"} in the data.
+          </p>
+        );
+      }
+    }
+
+    return null;
   };
 
   return (
     <div className="ml-4">
-      {/* "Retrieve" button */}
-      <Button onClick={handleRetrieveClick}>Retrieve</Button>
+      <button
+        onClick={handleSendQuery}
+        className=" bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+      >
+        Send Query
+      </button>
 
-      {/* Display the retrieved array */}
-      <div className="mt-3">
-        {inorderTraversal.length > 0 && (
-          <div>
-            <h3>Inorder Traversal:</h3>
-            <ul>
-              {inorderTraversal.map((value, index) => (
-                <li key={index}>{value}</li>
-              ))}
-            </ul>
-          </div>
-        )}
-      </div>
+      {isQuerySent && (
+        <div className="-ml-4">
+          <Heading label={"Query Response"} />
+          {renderContent()}
+        </div>
+      )}
     </div>
   );
 }

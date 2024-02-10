@@ -12,12 +12,13 @@ function Project() {
   return (
     <div>
       <Card>
-        <Heading label={"Upload the Matrix"} />
+        <Heading label={"Upload the Matrix/Data"} />
         <SubHeading label={"(in .txt format)"} />
         <FileUpload />
       </Card>
       <Card>
         <Heading label={"Add Query Parameter(s)"} />
+        <SubHeading label={"Select the type of query you want to make"} />
         <MultiInputBox
           inputs={inputs}
           setInputs={setInputs}
@@ -26,9 +27,11 @@ function Project() {
         />
       </Card>
       <Card>
-        <Heading label={"Retrieve the traversal"} />
-        <SubHeading label={"(Click the button to get)"} />
-        <Retrieve inputs={inputs} />
+        <Heading label={"Retrieve Company Name(s)/Pincode(s)"} />
+        <SubHeading
+          label={"Click the button to query data as per above parameters"}
+        />
+        <Retrieve inputs={inputs} inputType={inputType} />
       </Card>
     </div>
   );

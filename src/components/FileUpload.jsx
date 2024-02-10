@@ -1,5 +1,4 @@
-// eslint-disable-next-line no-unused-vars
-import React, { useState } from "react";
+import { useState } from "react";
 import ProgressBar from "./ProgressBar";
 import Button from "./Button";
 
@@ -26,6 +25,13 @@ const FileUpload = () => {
         if (event.lengthComputable) {
           const percentComplete = (event.loaded / event.total) * 100;
           setUploadProgress(percentComplete);
+
+          // Reset progress bar after 1.5 seconds if progress reaches 100%
+          if (percentComplete === 100) {
+            setTimeout(() => {
+              setUploadProgress(0);
+            }, 2000);
+          }
         }
       });
 
