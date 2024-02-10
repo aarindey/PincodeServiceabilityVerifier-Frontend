@@ -8,6 +8,7 @@ import Retrieve from "../components/Retrieve";
 
 function Project() {
   const [inputs, setInputs] = useState([""]);
+  const [inputType, setInputType] = useState(0);
   return (
     <div>
       <Card>
@@ -16,8 +17,13 @@ function Project() {
         <FileUpload />
       </Card>
       <Card>
-        <Heading label={"Add Request Parameter(s)"} />
-        <MultiInputBox inputs={inputs} setInputs={setInputs} />
+        <Heading label={"Add Query Parameter(s)"} />
+        <MultiInputBox
+          inputs={inputs}
+          setInputs={setInputs}
+          inputType={inputType}
+          setInputType={setInputType}
+        />
       </Card>
       <Card>
         <Heading label={"Retrieve the traversal"} />
