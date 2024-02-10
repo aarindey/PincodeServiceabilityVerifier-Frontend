@@ -4,7 +4,7 @@ import ProgressBar from "./ProgressBar";
 import Button from "./Button";
 
 const UPLOAD_ENDPOINT =
-  "https://us-central1-local-cogency-413608.cloudfunctions.net/upload_matrix";
+  "https://asia-south2-local-cogency-413608.cloudfunctions.net/UploadSparseMatrix";
 
 // FileUpload component
 const FileUpload = () => {
