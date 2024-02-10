@@ -4,6 +4,7 @@ import axios from "axios";
 import Button from "./Button";
 
 // Retrieve component
+// eslint-disable-next-line react/prop-types
 export default function Retrieve({ inputs }) {
   const [inorderTraversal, setInorderTraversal] = useState([]);
 
@@ -12,7 +13,7 @@ export default function Retrieve({ inputs }) {
     try {
       // Make the API call
       const response = await axios.get(
-        "https://asia-south2-local-cogency-413608.cloudfunctions.net/search_matrix"
+        `https://asia-south2-local-cogency-413608.cloudfunctions.net/search_matrix?${inputs}`
       );
 
       // Extract the array from the response data

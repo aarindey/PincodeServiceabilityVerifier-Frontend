@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Button from "./Button";
 
 // eslint-disable-next-line react/prop-types
-const MultiInputBox = ({ inputs, setInputs }) => {
+const MultiInputBox = ({ setInputs }) => {
   const [parametersList, setParametersList] = useState("");
   // Function to handle changes in input values
   const handleInputChange = (value) => {
